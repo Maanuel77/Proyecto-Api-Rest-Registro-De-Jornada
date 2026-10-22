@@ -67,5 +67,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return problem;
     }
 
+    @ExceptionHandler(FichajeNotFoundException.class)
+    public ProblemDetail handleFichajeNotFound(FichajeNotFoundException ex) {
+
+        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
+        problem.setTitle("Recurso no encontrado");
+        problem.setDetail(ex.getMessage());
+        problem.setType(URI.create("https://example.com/errors/fichaje-not-found"));
+
+        return problem;
+    }
+
 
 }
