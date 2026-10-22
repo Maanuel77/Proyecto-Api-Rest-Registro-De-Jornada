@@ -89,8 +89,7 @@ public class EmpleadoService {
 
         if (totalSalarios.compareTo(departamento.getPresupuesto()) > 0) {
             throw new PresupuestoExcedidoException(
-                    "La suma de salarios (" + totalSalarios + ") supera el presupuesto del departamento "
-                            + departamento.getNombre() + " (" + departamento.getPresupuesto() + ")");
+                    totalSalarios, departamento.getNombre(), departamento.getPresupuesto());
         }
     }
 

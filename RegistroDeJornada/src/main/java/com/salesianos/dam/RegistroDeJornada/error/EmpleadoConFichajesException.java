@@ -1,8 +1,14 @@
 package com.salesianos.dam.RegistroDeJornada.error;
 
+import lombok.Getter;
+
+@Getter
 public class EmpleadoConFichajesException extends RuntimeException {
 
+    private final Object[] args;
+
     public EmpleadoConFichajesException(Long id) {
-        super("No se puede borrar el empleado con id " + id + " porque tiene fichajes registrados");
+        super("empleado.confichajes");
+        this.args = new Object[]{id};
     }
 }

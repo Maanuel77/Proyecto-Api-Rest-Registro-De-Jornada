@@ -1,16 +1,19 @@
 package com.salesianos.dam.RegistroDeJornada.error;
 
+import lombok.Getter;
+
+@Getter
 public class DepartamentoNotFoundException extends RuntimeException {
 
+    private final Object[] args;
+
     public DepartamentoNotFoundException() {
-        super("No se han encontrado departamentos");
+        super("departamento.notfound.list");
+        this.args = new Object[]{};
     }
 
     public DepartamentoNotFoundException(Long id) {
-        super("No se ha encontrado el departamento con id " + id);
-    }
-
-    public DepartamentoNotFoundException(String message) {
-        super(message);
+        super("departamento.notfound.id");
+        this.args = new Object[]{id};
     }
 }

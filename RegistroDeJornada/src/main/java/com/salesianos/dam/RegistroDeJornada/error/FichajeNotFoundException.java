@@ -1,12 +1,14 @@
 package com.salesianos.dam.RegistroDeJornada.error;
 
+import lombok.Getter;
+
+@Getter
 public class FichajeNotFoundException extends RuntimeException {
 
-    public FichajeNotFoundException(Long empleadoId) {
-        super("El empleado con id " + empleadoId + " no tiene fichajes");
-    }
+    private final Object[] args;
 
-    public FichajeNotFoundException(String message) {
-        super(message);
+    public FichajeNotFoundException(Long empleadoId) {
+        super("fichaje.notfound.empleado");
+        this.args = new Object[]{empleadoId};
     }
 }

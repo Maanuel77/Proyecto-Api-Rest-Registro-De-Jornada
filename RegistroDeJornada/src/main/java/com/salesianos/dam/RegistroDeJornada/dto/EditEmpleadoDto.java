@@ -10,17 +10,17 @@ import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 
 public record EditEmpleadoDto(
-        @NotBlank
-        @Size(max = 150)
+        @NotBlank(message = "{empleado.nombrecompleto.notblank}")
+        @Size(max = 150, message = "{empleado.nombrecompleto.size}")
         String nombreCompleto,
-        @NotBlank
-        @Size(max = 100)
+        @NotBlank(message = "{empleado.cargo.notblank}")
+        @Size(max = 100, message = "{empleado.cargo.size}")
         String cargo,
-        @NotNull
-        @Positive
-        @Digits(integer = 10, fraction = 2)
+        @NotNull(message = "{empleado.salario.notnull}")
+        @Positive(message = "{empleado.salario.positive}")
+        @Digits(integer = 10, fraction = 2, message = "{empleado.salario.digits}")
         BigDecimal salario,
-        @NotNull
+        @NotNull(message = "{empleado.departamentoid.notnull}")
         Long departamentoId
 ) {
 
