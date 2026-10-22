@@ -4,6 +4,7 @@ import com.salesianos.dam.RegistroDeJornada.dto.EditEmpleadoDto;
 import com.salesianos.dam.RegistroDeJornada.error.DepartamentoNotFoundException;
 import com.salesianos.dam.RegistroDeJornada.error.EmpleadoConFichajesException;
 import com.salesianos.dam.RegistroDeJornada.error.EmpleadoNotFoundException;
+import com.salesianos.dam.RegistroDeJornada.error.PresupuestoExcedidoException;
 import com.salesianos.dam.RegistroDeJornada.model.Departamento;
 import com.salesianos.dam.RegistroDeJornada.model.Empleado;
 import com.salesianos.dam.RegistroDeJornada.repo.DepartamentoRepository;
@@ -11,6 +12,7 @@ import com.salesianos.dam.RegistroDeJornada.repo.EmpleadoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -35,7 +37,9 @@ public class EmpleadoService {
 
     public Empleado create(EditEmpleadoDto editEmpleadoDto) {
         Empleado empleado = editEmpleadoDto.to();
-        empleado.setDepartamento(getDepartamento(editEmpleadoDto.departamentoId()));
+        Departamento departamento = getDepartamento(editEmpleadoDto.departamentoId());
+        validarPresupuesto(departamento, editEmpleadoDto.salario(), null);
+        empleado.setDepartamento(departamento);
         return empleadoRepository.save(empleado);
     }
 
@@ -43,10 +47,12 @@ public class EmpleadoService {
 
         return empleadoRepository.findById(id)
                 .map(e -> {
+                    Departamento departamento = getDepartamento(editEmpleadoDto.departamentoId());
+                    validarPresupuesto(departamento, editEmpleadoDto.salario(), id);
                     e.setNombreCompleto(editEmpleadoDto.nombreCompleto());
                     e.setCargo(editEmpleadoDto.cargo());
                     e.setSalario(editEmpleadoDto.salario());
-                    e.setDepartamento(getDepartamento(editEmpleadoDto.departamentoId()));
+                    e.setDepartamento(departamento);
                     return empleadoRepository.save(e);
                 })
                 .orElseThrow(() -> new EmpleadoNotFoundException(id));
@@ -54,7 +60,9 @@ public class EmpleadoService {
 
     public Empleado asignarDepartamento(Long empleadoId, Long deptoId) {
         Empleado empleado = findById(empleadoId);
-        empleado.setDepartamento(getDepartamento(deptoId));
+        Departamento departamento = getDepartamento(deptoId);
+        validarPresupuesto(departamento, empleado.getSalario(), empleadoId);
+        empleado.setDepartamento(departamento);
         return empleadoRepository.save(empleado);
     }
 
@@ -71,6 +79,19 @@ public class EmpleadoService {
     private Departamento getDepartamento(Long departamentoId) {
         return departamentoRepository.findById(departamentoId)
                 .orElseThrow(() -> new DepartamentoNotFoundException(departamentoId));
+    }
+
+    private void validarPresupuesto(Departamento departamento, BigDecimal salario, Long empleadoIdExcluido) {
+        BigDecimal totalSalarios = departamento.getEmpleados().stream()
+                .filter(e -> !e.getId().equals(empleadoIdExcluido))
+                .map(Empleado::getSalario)
+                .reduce(salario, BigDecimal::add);
+
+        if (totalSalarios.compareTo(departamento.getPresupuesto()) > 0) {
+            throw new PresupuestoExcedidoException(
+                    "La suma de salarios (" + totalSalarios + ") supera el presupuesto del departamento "
+                            + departamento.getNombre() + " (" + departamento.getPresupuesto() + ")");
+        }
     }
 
 }
