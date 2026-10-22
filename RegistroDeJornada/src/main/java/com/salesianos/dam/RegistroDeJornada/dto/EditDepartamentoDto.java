@@ -10,12 +10,12 @@ import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 
 public record EditDepartamentoDto(
-        @NotBlank
-        @Size(max = 100)
+        @NotBlank(message = "{departamento.nombre.notblank}")
+        @Size(max = 100, message = "{departamento.nombre.size}")
         String nombre,
-        @NotNull
-        @Positive
-        @Digits(integer = 10, fraction = 2)
+        @NotNull(message = "{departamento.presupuesto.notnull}")
+        @Positive(message = "{departamento.presupuesto.positive}")
+        @Digits(integer = 10, fraction = 2, message = "{departamento.presupuesto.digits}")
         BigDecimal presupuesto
 ) {
 

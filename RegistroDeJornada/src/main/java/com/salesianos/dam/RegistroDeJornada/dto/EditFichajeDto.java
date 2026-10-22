@@ -4,7 +4,7 @@ import com.salesianos.dam.RegistroDeJornada.model.TipoFichaje;
 import jakarta.validation.constraints.NotNull;
 
 public record EditFichajeDto(
-        @NotNull
+        @NotNull(message = "{fichaje.tipo.notnull}")
         TipoFichaje tipo
 ) {
 }
