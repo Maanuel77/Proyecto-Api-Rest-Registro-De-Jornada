@@ -56,6 +56,16 @@ public class EmpleadoController {
 
     }
 
+    @PutMapping("/{empleadoId}/departamento/{deptoId}")
+    public ResponseEntity<GetEmpleadoDetail> asignarDepartamento(
+            @PathVariable Long empleadoId,
+            @PathVariable Long deptoId) {
+
+        return ResponseEntity.ok(
+                GetEmpleadoDetail.of(empleadoService.asignarDepartamento(empleadoId, deptoId)));
+
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         empleadoService.delete(id);
