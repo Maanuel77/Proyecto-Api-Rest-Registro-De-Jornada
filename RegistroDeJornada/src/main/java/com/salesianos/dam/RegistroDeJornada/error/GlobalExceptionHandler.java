@@ -56,5 +56,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return problem;
     }
 
+    @ExceptionHandler(FichajeDuplicadoException.class)
+    public ProblemDetail handleFichajeDuplicado(FichajeDuplicadoException ex) {
+
+        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.CONFLICT);
+        problem.setTitle("Fichaje duplicado");
+        problem.setDetail(ex.getMessage());
+        problem.setType(URI.create("https://example.com/errors/fichaje-duplicado"));
+
+        return problem;
+    }
+
 
 }
