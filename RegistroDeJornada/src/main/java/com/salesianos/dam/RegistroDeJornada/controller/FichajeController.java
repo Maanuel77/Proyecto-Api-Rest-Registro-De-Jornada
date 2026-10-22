@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -24,6 +26,16 @@ public class FichajeController {
         return ResponseEntity.status(201)
                 .body(GetFichajeDto.of(fichajeService.fichar(empleadoId, fichaje)));
 
+    }
+
+    @GetMapping("/fichajes")
+    public ResponseEntity<List<GetFichajeDto>> historial(@PathVariable Long empleadoId) {
+
+        return ResponseEntity.ok(
+                fichajeService.historial(empleadoId)
+                        .stream()
+                        .map(GetFichajeDto::of)
+                        .toList());
     }
 
 }

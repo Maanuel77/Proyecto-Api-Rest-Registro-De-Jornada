@@ -3,6 +3,7 @@ package com.salesianos.dam.RegistroDeJornada.service;
 import com.salesianos.dam.RegistroDeJornada.dto.EditFichajeDto;
 import com.salesianos.dam.RegistroDeJornada.error.EmpleadoNotFoundException;
 import com.salesianos.dam.RegistroDeJornada.error.FichajeDuplicadoException;
+import com.salesianos.dam.RegistroDeJornada.error.FichajeNotFoundException;
 import com.salesianos.dam.RegistroDeJornada.model.Empleado;
 import com.salesianos.dam.RegistroDeJornada.model.Fichaje;
 import com.salesianos.dam.RegistroDeJornada.model.TipoFichaje;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +39,17 @@ public class FichajeService {
                 .tipo(siguiente)
                 .momento(LocalDateTime.now())
                 .build());
+    }
+
+    public List<Fichaje> historial(Long empleadoId) {
+        if (!empleadoRepository.existsById(empleadoId)) {
+            throw new EmpleadoNotFoundException(empleadoId);
+        }
+        List<Fichaje> result = fichajeRepository.findByEmpleadoIdOrderByMomentoDesc(empleadoId);
+        if (result.isEmpty()) {
+            throw new FichajeNotFoundException(empleadoId);
+        }
+        return result;
     }
 
 }
