@@ -78,5 +78,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return problem;
     }
 
+    @ExceptionHandler(DepartamentoDuplicadoException.class)
+    public ProblemDetail handleDepartamentoDuplicado(DepartamentoDuplicadoException ex) {
+
+        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.CONFLICT);
+        problem.setTitle("Departamento duplicado");
+        problem.setDetail(ex.getMessage());
+        problem.setType(URI.create("https://example.com/errors/departamento-duplicado"));
+
+        return problem;
+    }
+
 
 }

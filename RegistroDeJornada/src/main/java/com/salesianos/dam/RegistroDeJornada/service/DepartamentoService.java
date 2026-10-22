@@ -2,6 +2,7 @@ package com.salesianos.dam.RegistroDeJornada.service;
 
 import com.salesianos.dam.RegistroDeJornada.dto.EditDepartamentoDto;
 import com.salesianos.dam.RegistroDeJornada.error.DepartamentoConEmpleadosException;
+import com.salesianos.dam.RegistroDeJornada.error.DepartamentoDuplicadoException;
 import com.salesianos.dam.RegistroDeJornada.error.DepartamentoNotFoundException;
 import com.salesianos.dam.RegistroDeJornada.model.Departamento;
 import com.salesianos.dam.RegistroDeJornada.repo.DepartamentoRepository;
@@ -30,10 +31,17 @@ public class DepartamentoService {
     }
 
     public Departamento create(EditDepartamentoDto editDepartamentoDto) {
+        if (departamentoRepository.existsByNombre(editDepartamentoDto.nombre())) {
+            throw new DepartamentoDuplicadoException(editDepartamentoDto.nombre());
+        }
         return departamentoRepository.save(editDepartamentoDto.to());
     }
 
     public Departamento edit(Long id, EditDepartamentoDto editDepartamentoDto) {
+
+        if (departamentoRepository.existsByNombreAndIdNot(editDepartamentoDto.nombre(), id)) {
+            throw new DepartamentoDuplicadoException(editDepartamentoDto.nombre());
+        }
 
         return departamentoRepository.findById(id)
                 .map(d -> {
