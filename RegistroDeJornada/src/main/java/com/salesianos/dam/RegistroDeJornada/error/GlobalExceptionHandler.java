@@ -34,5 +34,27 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return problem;
     }
 
+    @ExceptionHandler(EmpleadoNotFoundException.class)
+    public ProblemDetail handleEmpleadoNotFound(EmpleadoNotFoundException ex) {
+
+        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
+        problem.setTitle("Recurso no encontrado");
+        problem.setDetail(ex.getMessage());
+        problem.setType(URI.create("https://example.com/errors/empleado-not-found"));
+
+        return problem;
+    }
+
+    @ExceptionHandler(EmpleadoConFichajesException.class)
+    public ProblemDetail handleEmpleadoConFichajes(EmpleadoConFichajesException ex) {
+
+        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.CONFLICT);
+        problem.setTitle("Empleado con fichajes");
+        problem.setDetail(ex.getMessage());
+        problem.setType(URI.create("https://example.com/errors/empleado-con-fichajes"));
+
+        return problem;
+    }
+
 
 }
