@@ -52,6 +52,12 @@ public class EmpleadoService {
                 .orElseThrow(() -> new EmpleadoNotFoundException(id));
     }
 
+    public Empleado asignarDepartamento(Long empleadoId, Long deptoId) {
+        Empleado empleado = findById(empleadoId);
+        empleado.setDepartamento(getDepartamento(deptoId));
+        return empleadoRepository.save(empleado);
+    }
+
     public void delete(Long id) {
         empleadoRepository.findById(id)
                 .ifPresent(e -> {
