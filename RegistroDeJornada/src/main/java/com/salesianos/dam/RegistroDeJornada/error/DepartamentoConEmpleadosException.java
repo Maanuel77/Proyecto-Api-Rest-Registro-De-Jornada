@@ -1,8 +1,14 @@
 package com.salesianos.dam.RegistroDeJornada.error;
 
+import lombok.Getter;
+
+@Getter
 public class DepartamentoConEmpleadosException extends RuntimeException {
 
+    private final Object[] args;
+
     public DepartamentoConEmpleadosException(Long id) {
-        super("No se puede borrar el departamento con id " + id + " porque tiene empleados asignados");
+        super("departamento.conempleados");
+        this.args = new Object[]{id};
     }
 }

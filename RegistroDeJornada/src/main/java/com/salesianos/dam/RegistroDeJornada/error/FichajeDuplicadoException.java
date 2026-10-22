@@ -1,10 +1,15 @@
 package com.salesianos.dam.RegistroDeJornada.error;
 
 import com.salesianos.dam.RegistroDeJornada.model.TipoFichaje;
+import lombok.Getter;
 
+@Getter
 public class FichajeDuplicadoException extends RuntimeException {
 
+    private final Object[] args;
+
     public FichajeDuplicadoException(TipoFichaje tipo) {
-        super("No se puede registrar una " + tipo + " porque el último fichaje del empleado ya es de ese tipo");
+        super("fichaje.duplicado");
+        this.args = new Object[]{tipo};
     }
 }
