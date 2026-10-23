@@ -2,7 +2,7 @@
 
 ![Java](https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-4.1-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
-![OpenAPI](https://img.shields.io/badge/OpenAPI-3.1-6BA539?style=for-the-badge&logo=swagger&logoColor=white)
+![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0-6BA539?style=for-the-badge&logo=swagger&logoColor=white)
 ![License](https://img.shields.io/badge/License-Academic-blue?style=for-the-badge)
 
 Proyecto de desarrollo de una API REST para el control horario y registro de jornada laboral de empleados por departamentos. Desarrollado de forma conjunta para los módulos de **Acceso a Datos (AD)** y **Programación de Servicios y Procesos (PSP)** de 2º de DAM (Curso 2026-27) en Salesianos Triana.
@@ -95,7 +95,19 @@ Los errores se capturan de forma centralizada en `GlobalExceptionHandler` (`@Res
 | `DepartamentoDuplicadoException` | `409 Conflict` |
 | `DepartamentoConEmpleadosException`, `EmpleadoConFichajesException` | `409 Conflict` |
 | `FichajeDuplicadoException` | `409 Conflict` |
-| Errores de validación (`@Valid`) | `400 Bad Request` |
+| Errores de validación (`@Valid`) y JSON mal formado | `400 Bad Request` |
+
+Los errores propios de Spring (validación, JSON mal formado, parámetros de tipo incorrecto, método no permitido o ruta inexistente) también devuelven un `ProblemDetail` con título y detalle externalizados en los `.properties` mediante las claves `problemDetail.*`. En los errores de validación, el detalle incluye cada campo con su mensaje:
+
+```json
+{
+  "type": "about:blank",
+  "title": "Datos de entrada no válidos",
+  "status": 400,
+  "detail": "La petición contiene errores de validación.  nombre: 'El nombre del departamento es obligatorio'",
+  "instance": "/api/v1/departamentos"
+}
+```
 
 Ejemplo de respuesta de error:
 
@@ -144,7 +156,7 @@ Todos los endpoints están bajo la ruta base `/api/v1`.
 
 ## Documentación OpenAPI / Swagger
 
-La API cuenta con documentación interactiva generada con **springdoc-openapi** (OpenAPI 3.1). Cada controlador tiene su `@Tag` y cada endpoint su `@Operation`, `@ApiResponses`, `@Parameter` y ejemplos JSON de petición y respuesta.
+La API cuenta con documentación interactiva generada con **springdoc-openapi** en formato **OpenAPI 3.0** (`springdoc.api-docs.version=openapi_3_0`). La clase principal define con `@OpenAPIDefinition` el título, la descripción y la versión de la API. Cada controlador tiene su `@Tag` y cada endpoint su `@Operation`, `@ApiResponses`, `@Parameter` y ejemplos JSON de petición y respuesta.
 
 Una vez arrancado el servidor en local:
 - **Swagger UI:** [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
