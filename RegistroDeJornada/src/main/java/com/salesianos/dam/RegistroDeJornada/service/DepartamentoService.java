@@ -34,7 +34,7 @@ public class DepartamentoService {
     }
 
     public Departamento create(EditDepartamentoDto editDepartamentoDto) {
-        if (departamentoRepository.existsByNombre(editDepartamentoDto.nombre())) {
+        if (departamentoRepository.existsByNombreIgnoreCase(editDepartamentoDto.nombre())) {
             throw new DepartamentoDuplicadoException(editDepartamentoDto.nombre());
         }
         return departamentoRepository.save(editDepartamentoDto.to());
@@ -42,7 +42,7 @@ public class DepartamentoService {
 
     public Departamento edit(Long id, EditDepartamentoDto editDepartamentoDto) {
 
-        if (departamentoRepository.existsByNombreAndIdNot(editDepartamentoDto.nombre(), id)) {
+        if (departamentoRepository.existsByNombreIgnoreCaseAndIdNot(editDepartamentoDto.nombre(), id)) {
             throw new DepartamentoDuplicadoException(editDepartamentoDto.nombre());
         }
 
