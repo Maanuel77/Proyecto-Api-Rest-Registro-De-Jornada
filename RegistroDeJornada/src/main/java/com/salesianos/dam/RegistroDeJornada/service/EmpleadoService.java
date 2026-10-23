@@ -37,9 +37,7 @@ public class EmpleadoService {
 
     public Empleado create(EditEmpleadoDto editEmpleadoDto) {
         Empleado empleado = editEmpleadoDto.to();
-        Departamento departamento = getDepartamento(editEmpleadoDto.departamentoId());
-        validarPresupuesto(departamento, editEmpleadoDto.salario(), null);
-        empleado.setDepartamento(departamento);
+        empleado.setDepartamento(getDepartamento(editEmpleadoDto.departamentoId()));
         return empleadoRepository.save(empleado);
     }
 
@@ -47,12 +45,10 @@ public class EmpleadoService {
 
         return empleadoRepository.findById(id)
                 .map(e -> {
-                    Departamento departamento = getDepartamento(editEmpleadoDto.departamentoId());
-                    validarPresupuesto(departamento, editEmpleadoDto.salario(), id);
                     e.setNombreCompleto(editEmpleadoDto.nombreCompleto());
                     e.setCargo(editEmpleadoDto.cargo());
                     e.setSalario(editEmpleadoDto.salario());
-                    e.setDepartamento(departamento);
+                    e.setDepartamento(getDepartamento(editEmpleadoDto.departamentoId()));
                     return empleadoRepository.save(e);
                 })
                 .orElseThrow(() -> new EmpleadoNotFoundException(id));

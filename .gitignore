@@ -5,5 +5,15 @@
 db/
 
 ### Postman (workspace local) ###
+# Solo se versiona la colección exportada
 .postman/
-postman/globals/
+postman/*
+!postman/*.postman_collection.json
+
+### Sistema operativo ###
+.DS_Store
+Thumbs.db
+desktop.ini
+
+### VS Code ###
+.vscode/

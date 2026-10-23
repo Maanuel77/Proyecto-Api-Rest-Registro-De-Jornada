@@ -1,6 +1,7 @@
 package com.salesianos.dam.RegistroDeJornada.dto;
 
 import com.salesianos.dam.RegistroDeJornada.model.Empleado;
+import com.salesianos.dam.RegistroDeJornada.validation.PresupuestoSuficiente;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -9,6 +10,7 @@ import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 
+@PresupuestoSuficiente
 public record EditEmpleadoDto(
         @NotBlank(message = "{empleado.nombrecompleto.notblank}")
         @Size(max = 150, message = "{empleado.nombrecompleto.size}")
