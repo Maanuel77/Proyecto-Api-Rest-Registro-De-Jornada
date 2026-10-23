@@ -3,3 +3,7 @@
 
 ### H2 ###
 db/
+
+### Postman (workspace local) ###
+.postman/
+postman/globals/
