@@ -70,7 +70,11 @@ Para aislar el modelo de persistencia del contrato de la API y evitar problemas 
 1. **Validación estándar de entradas** con `@Valid` en todos los `@RequestBody`:
    - Textos: `@NotBlank` y `@Size`.
    - Importes: `@NotNull`, `@Positive` y `@Digits(integer = 10, fraction = 2)`.
-2. **Validación de presupuesto:** al crear o editar un empleado y al asignarlo a un departamento, el método `validarPresupuesto` de `EmpleadoService` comprueba que la suma de salarios del departamento no supere su presupuesto. Si lo supera lanza `PresupuestoExcedidoException` (`400 Bad Request`).
+2. **Anotación de validación personalizada `@PresupuestoSuficiente`** (paquete `validation`):
+   - Se aplica a nivel de clase sobre `EditEmpleadoDto`, por lo que se comprueba al crear y al editar un empleado.
+   - Su validador `PresupuestoSuficienteValidator` (`ConstraintValidator`) suma los salarios del departamento más el nuevo salario y comprueba que no superen el presupuesto. Al editar, obtiene el id del empleado de la URL para no contar dos veces su salario.
+   - Si no se cumple, la petición se rechaza con `400 Bad Request` y el mensaje externalizado `empleado.presupuesto.excedido`.
+   - En las operaciones sin body (asignar un empleado a un departamento) y al reducir el presupuesto de un departamento, la misma regla se comprueba en el service y lanza `PresupuestoExcedidoException` (`400 Bad Request`).
 3. **Reglas de negocio adicionales:**
    - El nombre de un departamento es único (`409 Conflict`).
    - No se puede borrar un departamento con empleados ni un empleado con fichajes (`409 Conflict`).
@@ -201,7 +205,7 @@ RegistroDeJornada/
     │   ├── model/         # Entidades JPA y TipoFichaje
     │   ├── repo/          # Repositorios JPA
     │   ├── service/       # Lógica de negocio
-    │   ├── validation/
+    │   ├── validation/    # @PresupuestoSuficiente y su validador
     │   ├── InitData.java  # Datos de ejemplo
     │   └── RegistroDeJornadaApplication.java
     └── resources/
