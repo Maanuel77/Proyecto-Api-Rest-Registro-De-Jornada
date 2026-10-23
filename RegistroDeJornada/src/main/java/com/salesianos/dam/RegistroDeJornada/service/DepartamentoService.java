@@ -4,11 +4,14 @@ import com.salesianos.dam.RegistroDeJornada.dto.EditDepartamentoDto;
 import com.salesianos.dam.RegistroDeJornada.error.DepartamentoConEmpleadosException;
 import com.salesianos.dam.RegistroDeJornada.error.DepartamentoDuplicadoException;
 import com.salesianos.dam.RegistroDeJornada.error.DepartamentoNotFoundException;
+import com.salesianos.dam.RegistroDeJornada.error.PresupuestoExcedidoException;
 import com.salesianos.dam.RegistroDeJornada.model.Departamento;
+import com.salesianos.dam.RegistroDeJornada.model.Empleado;
 import com.salesianos.dam.RegistroDeJornada.repo.DepartamentoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -45,6 +48,7 @@ public class DepartamentoService {
 
         return departamentoRepository.findById(id)
                 .map(d -> {
+                    validarPresupuesto(d, editDepartamentoDto.presupuesto());
                     d.setNombre(editDepartamentoDto.nombre());
                     d.setPresupuesto(editDepartamentoDto.presupuesto());
                     return departamentoRepository.save(d);
@@ -60,6 +64,17 @@ public class DepartamentoService {
                     }
                     departamentoRepository.delete(d);
                 });
+    }
+
+    private void validarPresupuesto(Departamento departamento, BigDecimal presupuesto) {
+        BigDecimal totalSalarios = departamento.getEmpleados().stream()
+                .map(Empleado::getSalario)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        if (totalSalarios.compareTo(presupuesto) > 0) {
+            throw new PresupuestoExcedidoException(
+                    totalSalarios, departamento.getNombre(), presupuesto);
+        }
     }
 
 }
