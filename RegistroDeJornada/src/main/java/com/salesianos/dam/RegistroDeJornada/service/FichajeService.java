@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +27,13 @@ public class FichajeService {
         Empleado empleado = empleadoRepository.findById(empleadoId)
                 .orElseThrow(() -> new EmpleadoNotFoundException(empleadoId));
 
-        TipoFichaje siguiente = fichajeRepository.findFirstByEmpleadoIdOrderByMomentoDesc(empleadoId)
+        Optional<Fichaje> ultimo = fichajeRepository.findFirstByEmpleadoIdOrderByMomentoDesc(empleadoId);
+
+        if (ultimo.isEmpty() && editFichajeDto.tipo() == TipoFichaje.SALIDA) {
+            throw new FichajeDuplicadoException();
+        }
+
+        TipoFichaje siguiente = ultimo
                 .map(f -> f.getTipo() == TipoFichaje.ENTRADA ? TipoFichaje.SALIDA : TipoFichaje.ENTRADA)
                 .orElse(TipoFichaje.ENTRADA);
 

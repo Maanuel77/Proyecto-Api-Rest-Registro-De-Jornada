@@ -8,6 +8,11 @@ public class FichajeDuplicadoException extends RuntimeException {
 
     private final Object[] args;
 
+    public FichajeDuplicadoException() {
+        super("fichaje.sinentrada");
+        this.args = new Object[]{};
+    }
+
     public FichajeDuplicadoException(TipoFichaje tipo) {
         super("fichaje.duplicado");
         this.args = new Object[]{tipo};
