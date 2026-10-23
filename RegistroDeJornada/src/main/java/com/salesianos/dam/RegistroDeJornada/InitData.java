@@ -39,7 +39,7 @@ public class InitData {
         empleadoRepository.saveAll(List.of(laura, carlos, ana, javier));
 
         LocalDateTime ayer = LocalDateTime.now().minusDays(1).withHour(8).withMinute(0).withSecond(0).withNano(0);
-        LocalDateTime hoy = LocalDateTime.now().withHour(8).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime hoy = LocalDateTime.now().minusHours(1).withSecond(0).withNano(0);
 
         fichajeRepository.saveAll(List.of(
                 Fichaje.builder().empleado(laura).tipo(TipoFichaje.ENTRADA).momento(ayer).build(),
